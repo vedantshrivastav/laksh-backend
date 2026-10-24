@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import expenseRoutes from "./routes/expenses";
-
+import goalRoutes from "./routes/goals";
+import commitmentRoutes from "./routes/commitments";
 dotenv.config();
 
 const app = express();
@@ -11,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/goals", goalRoutes);
+app.use("/api/commitments", commitmentRoutes);
 
 const PORT = process.env.PORT || 4000;
 
