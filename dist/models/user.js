@@ -38,6 +38,9 @@ const mongoose_1 = __importStar(require("mongoose"));
 const UserSchema = new mongoose_1.Schema({
     phone: { type: String, required: true, unique: true },
     name: { type: String },
+    activeGoalId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Goal", default: null },
+    monthlyBudget: { type: Number, required: true, default: 15000, min: 0 },
+    hasOnboarded: { type: Boolean, required: true, default: false },
 }, { timestamps: true });
 exports.User = mongoose_1.default.model("User", UserSchema);
 //# sourceMappingURL=user.js.map

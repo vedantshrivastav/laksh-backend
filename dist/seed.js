@@ -17,7 +17,7 @@ function randomPastDate(daysAgo) {
     return d;
 }
 async function seed() {
-    const mongoUri = process.env.MONGO_URI;
+    const mongoUri = process.env.MONGO_URL;
     const jwtSecret = process.env.JWT_SECRET;
     if (!mongoUri || !jwtSecret) {
         throw new Error("MONGO_URI and JWT_SECRET must be set in .env");

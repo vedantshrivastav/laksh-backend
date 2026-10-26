@@ -4,6 +4,8 @@ export interface UserDocument extends Document {
   phone: string;
   name?: string;
   activeGoalId: Types.ObjectId | null;
+  monthlyBudget: number;
+  hasOnboarded: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -13,6 +15,8 @@ const UserSchema = new Schema<UserDocument>(
     phone: { type: String, required: true, unique: true },
     name: { type: String },
     activeGoalId: { type: Schema.Types.ObjectId, ref: "Goal", default: null },
+    monthlyBudget: { type: Number, required: true, default: 15000, min: 0 },
+    hasOnboarded: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );
