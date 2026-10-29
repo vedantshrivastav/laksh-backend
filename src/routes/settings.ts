@@ -17,6 +17,7 @@ router.get("/", auth, async (req: AuthRequest, res: Response) => {
     res.json({
       monthlyBudget: user.monthlyBudget,
       hasOnboarded: user.hasOnboarded,
+      lastSeenWeekKey: user.lastSeenWeekKey,
     });
   } catch {
     res.status(500).json({ error: "Failed to fetch settings" });
@@ -27,9 +28,13 @@ router.get("/", auth, async (req: AuthRequest, res: Response) => {
 router.patch("/", auth, async (req: AuthRequest, res: Response) => {
   try {
     const userId = new Types.ObjectId(req.user!.id);
-    const { monthlyBudget, hasOnboarded } = req.body;
+    const { monthlyBudget, hasOnboarded, lastSeenWeekKey } = req.body;
 
-    const update: Partial<{ monthlyBudget: number; hasOnboarded: boolean }> = {};
+    const update: Partial<{
+      monthlyBudget: number;
+      hasOnboarded: boolean;
+      lastSeenWeekKey: string;
+    }> = {};
 
     if (monthlyBudget !== undefined) {
       if (typeof monthlyBudget !== "number" || monthlyBudget < 0) {
@@ -45,6 +50,13 @@ router.patch("/", auth, async (req: AuthRequest, res: Response) => {
       update.hasOnboarded = hasOnboarded;
     }
 
+    if (lastSeenWeekKey !== undefined) {
+      if (typeof lastSeenWeekKey !== "string") {
+        return res.status(400).json({ error: "lastSeenWeekKey must be a string" });
+      }
+      update.lastSeenWeekKey = lastSeenWeekKey;
+    }
+
     if (Object.keys(update).length === 0) {
       return res.status(400).json({ error: "No valid fields to update" });
     }
@@ -57,6 +69,7 @@ router.patch("/", auth, async (req: AuthRequest, res: Response) => {
     res.json({
       monthlyBudget: user.monthlyBudget,
       hasOnboarded: user.hasOnboarded,
+      lastSeenWeekKey: user.lastSeenWeekKey,
     });
   } catch {
     res.status(500).json({ error: "Failed to update settings" });
