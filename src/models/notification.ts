@@ -1,5 +1,4 @@
-
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export type NotificationType =
   | "budget"
@@ -10,61 +9,38 @@ export type NotificationType =
   | "frequency"
   | "general";
 
-export interface INotification extends Document {
-  userId: mongoose.Types.ObjectId;
+const TYPE_VALUES: NotificationType[] = [
+  "budget",
+  "goal",
+  "commitment",
+  "weekly_report",
+  "pattern",
+  "frequency",
+  "general",
+];
+
+export interface NotificationDocument extends Document {
+  userId: Types.ObjectId;
   type: NotificationType;
   title: string;
   message: string;
   read: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const notificationSchema = new Schema<INotification>(
+const NotificationSchema = new Schema<NotificationDocument>(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
-    type: {
-      type: String,
-      enum: [
-        "budget",
-        "goal",
-        "commitment",
-        "weekly_report",
-        "pattern",
-        "frequency",
-        "general",
-      ],
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    message: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    read: {
-      type: Boolean,
-      default: false,
-    },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User", index: true },
+    type: { type: String, required: true, enum: TYPE_VALUES },
+    title: { type: String, required: true },
+    message: { type: String, required: true },
+    read: { type: Boolean, required: true, default: false },
   },
-  {
-    timestamps: { createdAt: true, updatedAt: false },
-  }
+  { timestamps: true }
 );
 
-notificationSchema.index({ userId: 1, createdAt: -1 });
-
-const Notification = mongoose.model<INotification>(
+export const Notification = mongoose.model<NotificationDocument>(
   "Notification",
-  notificationSchema
+  NotificationSchema
 );
-
-export default Notification;
